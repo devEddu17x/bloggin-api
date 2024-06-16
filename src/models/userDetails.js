@@ -22,12 +22,12 @@ export class UserModel {
     }
   }
 
-  async getById ({ id }) {
+  async getByUserId ({ id }) {
     try {
       const [users] = await db.execute(`
         SELECT username, email, name, lastname
         FROM users
-        WHERE id = UUID_TO_BIN(?)
+        WHERE user_id = UUID_TO_BIN(?)
         `, [id])
       return users.length !== 0 ? { succes: true, data: users[0] } : { error: 'User not found' }
     } catch (e) {
