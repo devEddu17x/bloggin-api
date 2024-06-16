@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { ERRORS } from './errorsMessages/errors.js'
+import { ERRORS } from '../messages/error.js'
 export const followsSchema = z.object({
   followerID: z.string(ERRORS.REQUIRED('User ID'))
     .uuid(ERRORS.INVALID('UUID')),

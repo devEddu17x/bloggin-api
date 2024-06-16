@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { ERRORS } from './errorsMessages/errors.js'
+import { ERRORS } from '../messages/error.js'
 
 export const userSchema = z.object({
   username: z.string(ERRORS.REQUIRED('Username'))

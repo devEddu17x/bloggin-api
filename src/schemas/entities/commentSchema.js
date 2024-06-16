@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { ERRORS } from './errorsMessages/errors.js'
+import { ERRORS } from '../messages/error.js'
 export const commentSchema = z.object({
   content: z.string()
     .min(1, ERRORS.MIN('Content', 1))

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { ERRORS } from './errorsMessages/errors.js'
+import { ERRORS } from '../messages/error.js'
 import countries from 'i18n-iso-countries'
 import { isPhoneNumber } from './customValidations/phone.js'
 import { isAfter1924 } from './customValidations/date.js'
