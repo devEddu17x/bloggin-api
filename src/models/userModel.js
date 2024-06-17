@@ -1,13 +1,18 @@
 import { db } from '../config/db/mysql.js'
+import bcrypt from 'bcrypt'
+import { SALT_ROUNDS } from '../config/hash.js'
 export class UserModel {
   static async create ({ id, input }) {
     const { username, email, password, name, lastName } = input
+    console.log(SALT_ROUNDS)
+    const hashedPassword = await bcrypt.hash(password, 5)
+    console.log(hashedPassword)
     try {
       await db.execute(`
         INSERT INTO users(user_id, username, email, password, name, last_name)
         VALUES
         (UUID_TO_BIN(?),?,?,?,?,?);
-        `, [id, username, email, password, name, lastName]
+        `, [id, username, email, hashedPassword, name, lastName]
       )
       return { success: true, message: 'User has been created' }
     } catch (e) {
