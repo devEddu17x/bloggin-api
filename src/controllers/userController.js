@@ -12,14 +12,13 @@ export class UserController {
 
   getById = async (req, res) => {
     const { id } = req.params
-    if (!id) return { invalid_id: 'Valid id as UUUID is required' }
     const result = await this.userModel.getById({ id })
     res.send((!result.success) ? { error: result.error } : { user: result.data })
   }
 
   getByQuery = async (req, res) => {
     const { name, lastname } = req.query
-    if (!name && !lastname) res.status(400).send({ error: 'Name or lastname are required at this endpoint' })
+    if (!name && !lastname) return res.status(400).send({ error: 'Name or lastname are required at this endpoint' })
     const result = await this.userModel.getByQuery({ query: req.query })
     res.send((!result.success) ? { error: result.error } : { user: result.data })
   }
