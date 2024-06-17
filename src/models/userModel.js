@@ -41,13 +41,31 @@ export class UserModel {
   static async getById ({ id }) {
     try {
       const [users] = await db.execute(`
-        SELECT username, email, name, lastname
+        SELECT username, email, name, last_name
         FROM users
-        WHERE id = UUID_TO_BIN(?)
+        WHERE user_id = UUID_TO_BIN(?)
         `, [id])
-      return users.length !== 0 ? { success: true, data: users[0] } : { error: 'User not found' }
+      return users.length > 0 ? { success: true, data: users[0] } : { error: 'User not found' }
     } catch (e) {
-      return { error: 'Can not find user' }
+      return { error: 'Unexpected error' }
+    }
+  }
+
+  static async getByQuery ({ query }) {
+    const toFind = (query.name && query.lastname) ? 'name = ? OR last_name = ?' : (query.name) ? 'name = ?' : 'last_name = ?'
+    const values = []
+    if (query.name) values.push(query.name)
+    if (query.lastname) values.push(query.lastname)
+    try {
+      const [users] = await db.execute(`
+        SELECT BIN_TO_UUID(user_id) user_id, username, name, last_name
+        FROM users
+        WHERE ${toFind}
+        `, values)
+      return users.length > 0 ? { success: true, data: users } : { error: 'No users found' }
+    } catch (e) {
+      console.log(e)
+      return { error: 'Unexpected error' }
     }
   }
 
