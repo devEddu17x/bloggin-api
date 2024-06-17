@@ -4,9 +4,7 @@ import { SALT_ROUNDS } from '../config/hash.js'
 export class UserModel {
   static async create ({ id, input }) {
     const { username, email, password, name, lastName } = input
-    console.log(SALT_ROUNDS)
-    const hashedPassword = await bcrypt.hash(password, 5)
-    console.log(hashedPassword)
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
     try {
       await db.execute(`
         INSERT INTO users(user_id, username, email, password, name, last_name)
