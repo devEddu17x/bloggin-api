@@ -4,30 +4,30 @@ export class UserController {
     this.userModel = userModel
   }
 
-  async create (req, res) {
+  create = async (req, res) => {
     const id = randomUUID()
-    const result = this.userModel.create({ id, input: req })
-    res.send((!result.succes) ? { error: result.error } : { succes: result.message })
+    const result = await this.userModel.create({ id, input: req })
+    res.send((!result.success) ? { error: result.error } : { success: result.message })
   }
 
-  async getById (req, res) {
+  getById = async (req, res) => {
     const { id } = req.params
     if (!id) return { invalid_id: 'Valid id as UUUID is required' }
     const result = this.userModel.getById({ id })
-    res.send((!result.succes) ? { error: result.error } : { succes: result.message })
+    res.send((!result.success) ? { error: result.error } : { success: result.message })
   }
 
-  async update (req, res) {
+  update = async (req, res) => {
     const { id } = req.params
     if (!id) return { invalid_id: 'Valid id as UUUID is required' }
     const result = this.userModel.update({ id, input: req.body })
-    res.send((!result.succes) ? { error: result.error } : { succes: result.message })
+    res.send((!result.success) ? { error: result.error } : { success: result.message })
   }
 
-  async delete (req, res) {
+  delete = async (req, res) => {
     const { id } = req.params
     if (!id) return { invalid_id: 'Valid id as UUUID is required' }
     const result = this.userModel.delete({ id })
-    res.send((!result.succes) ? { error: result.error } : { succes: result.message })
+    res.send((!result.success) ? { error: result.error } : { success: result.message })
   }
 }
