@@ -12,7 +12,7 @@ export const userSchema = z.object({
 
   password: z.string(ERRORS.REQUIRED('Password'))
     .min(8, ERRORS.MIN('Password', 8))
-    .max(50, ERRORS.MAX('Password', 50)),
+    .max(60, ERRORS.MAX('Password', 60)),
 
   name: z.string(ERRORS.REQUIRED('Name'))
     .min(5, ERRORS.MIN('Name', 5))
