@@ -84,10 +84,10 @@ export class UserModel {
     }
   }
 
-  static async getPassword ({ input, key }) {
+  static async getDataToLogin ({ input, key }) {
     try {
       const [rows] = await db.execute(`
-        SELECT password
+        SELECT BIN_TO_UUID(user_id) user_id, username, name, last_name, password 
         FROM users
         WHERE ${key} = ?
         `, [input])

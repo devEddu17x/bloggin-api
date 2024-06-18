@@ -37,7 +37,7 @@ export class UserController {
     res.send((!result.success) ? { error: result.error } : { message: result.message })
   }
 
-  getPassword = async (input, key) => {
-    return await this.userModel.getPassword({ input, key })
+  getDataToLogin = async (input, key) => {
+    return await this.userModel.getDataToLogin({ input, key })
   }
 }
