@@ -36,7 +36,6 @@ export class AuthController {
         expiresIn: '24h'
       }
     )
-    publicUser.token = token
-    res.send(valid ? { message: 'Login succesfull', user: publicUser } : { message: 'Invalid password' })
+    res.send(valid ? { message: 'Login succesfull', user: publicUser, token } : { message: 'Invalid password' })
   }
 }
