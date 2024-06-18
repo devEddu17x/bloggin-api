@@ -67,7 +67,6 @@ export class UserModel {
         `, values)
       return users.length > 0 ? { success: true, data: users } : { error: 'No users found' }
     } catch (e) {
-      console.log(e)
       return { error: 'Unexpected error' }
     }
   }
@@ -82,6 +81,19 @@ export class UserModel {
       return result.affectedRows > 0 ? { success: true, message: 'User has been deleted' } : { error: 'Can not delete user' }
     } catch (e) {
       return { error: 'Error deleting user' }
+    }
+  }
+
+  static async getPassword ({ input, key }) {
+    try {
+      const [rows] = await db.execute(`
+        SELECT password
+        FROM users
+        WHERE ${key} = ?
+        `, [input])
+      return rows.length > 0 ? { succes: true, data: rows[0] } : { error: `User with this ${key} does not exists` }
+    } catch (e) {
+      return { error: 'Unexpected error' }
     }
   }
 }
