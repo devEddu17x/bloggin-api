@@ -1,6 +1,8 @@
 import { validate } from '../schemas/schemaValidator.js'
 import { userSchema } from '../schemas/entities/userSchema.js'
 import { UserController } from './userController.js'
+import jwt from 'jsonwebtoken'
+import { JWT_KEY } from '../config/config.js'
 import bcrypt from 'bcrypt'
 
 export class AuthController {
@@ -22,6 +24,19 @@ export class AuthController {
     if (!result.succes) return res.send(result)
     const valid = await bcrypt.compare(password, result.data.password)
     const { password: _, ...publicUser } = result.data
+    const token = jwt.sign(
+      {
+        user_id: publicUser.user_id,
+        username: publicUser.username,
+        name: publicUser.name,
+        last_name: publicUser.last_name
+      },
+      JWT_KEY,
+      {
+        expiresIn: '24h'
+      }
+    )
+    publicUser.token = token
     res.send(valid ? { message: 'Login succesfull', user: publicUser } : { message: 'Invalid password' })
   }
 }
