@@ -1,7 +1,7 @@
 import { validate } from '../schemas/schemaValidator.js'
-import { authSchema } from '../schemas/entities/authSchema.js'
 import { userSchema } from '../schemas/entities/userSchema.js'
 import { UserController } from './userController.js'
+import bcrypt from 'bcrypt'
 
 export class AuthController {
   constructor ({ userModel }) {
@@ -17,9 +17,10 @@ export class AuthController {
 
   // login in building
   login = async (req, res) => {
-    // bulding login...
-    const result = validate(authSchema, req.body)
-    if (!result.success) return res.send(result.error)
-    // log user
+    const { input, password, key } = req.body
+    const result = await this.userController.getPassword(input, key)
+    if (!result.succes) return res.send(result)
+    const valid = await bcrypt.compare(password, result.data.password)
+    res.send(valid ? { message: 'Login succesfull' } : { message: 'Username or email invalid for this password' })
   }
 }

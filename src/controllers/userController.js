@@ -36,4 +36,8 @@ export class UserController {
     const result = this.userModel.delete({ id })
     res.send((!result.success) ? { error: result.error } : { message: result.message })
   }
+
+  getPassword = async (input, key) => {
+    return await this.userModel.getPassword({ input, key })
+  }
 }
