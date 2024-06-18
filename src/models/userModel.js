@@ -1,6 +1,6 @@
 import { db } from '../config/db/mysql.js'
 import bcrypt from 'bcrypt'
-import { SALT_ROUNDS } from '../config/hash.js'
+import { SALT_ROUNDS } from '../config/config.js'
 export class UserModel {
   static async create ({ id, input }) {
     const { username, email, password, name, lastName } = input
