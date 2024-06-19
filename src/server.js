@@ -1,4 +1,4 @@
 import { createApp } from './app.js'
 import { UserModel } from './models/userModel.js'
-
-createApp({ userModel: UserModel, postModel: null, commentModel: null })
+import { UserDetailsModel } from './models/userDetailsModel.js'
+createApp({ userModel: UserModel, userDetailsModel: UserDetailsModel, postModel: null, commentModel: null })

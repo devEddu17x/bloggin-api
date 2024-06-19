@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import { ERRORS } from '../messages/error.js'
 import countries from 'i18n-iso-countries'
-import { isPhoneNumber } from './customValidations/phone.js'
-import { isAfter1924 } from './customValidations/date.js'
+import { isPhoneNumber } from '../customValidations/phone.js'
+import { isAfter1924 } from '../customValidations/date.js'
 
 export const userDetailsSchema = z.object({
   userId: z.string(ERRORS.REQUIRED('User ID')).uuid(ERRORS.INVALID('UUID')),
