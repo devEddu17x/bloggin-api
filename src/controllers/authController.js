@@ -23,6 +23,7 @@ export class AuthController {
     const result = await this.userController.getDataToLogin(input, key)
     if (!result.succes) return res.send(result)
     const valid = await bcrypt.compare(password, result.data.password)
+    if (!valid) return res.send({ message: 'Invalid password' })
     const { password: _, ...publicUser } = result.data
     const token = jwt.sign(
       {
@@ -36,6 +37,12 @@ export class AuthController {
         expiresIn: '24h'
       }
     )
-    res.send(valid ? { message: 'Login succesfull', user: publicUser, token } : { message: 'Invalid password' })
+    res
+      .cookie('acces_token', token, {
+        httpOnly: true,
+        sameSite: 'strict',
+        maxAge: 1000 * 60 * 60 * 24
+      })
+      .send({ message: 'Login succesfull', user: publicUser })
   }
 }
