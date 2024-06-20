@@ -35,7 +35,7 @@ export class UserController {
 
   delete = async (req, res) => {
     const { id } = req.params
-    const result = this.userModel.delete({ id })
+    const result = await this.userModel.delete({ id })
     res.send((!result.success) ? { error: result.error } : { message: result.message })
   }
 
