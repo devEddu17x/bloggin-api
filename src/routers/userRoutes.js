@@ -7,6 +7,7 @@ export const createUserRouter = ({ userModel }) => {
   userRouter.get('/', userController.getByQuery) // get an user by name or lastname or both
   userRouter.get('/:id', validateIdExist, userController.getById) // get an user by id
   userRouter.delete('/:id', validateIdExist, userController.delete) // delete an user by id
+  userRouter.patch('/:id', validateIdExist, userController.update)
   return userRouter
 }
 

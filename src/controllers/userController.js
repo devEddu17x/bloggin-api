@@ -1,4 +1,6 @@
 import { randomUUID } from 'node:crypto'
+import { validatePartial } from '../schemas/schemaValidator.js'
+import { userSchema } from '../schemas/entities/userSchema.js'
 export class UserController {
   constructor ({ userModel }) {
     this.userModel = userModel
@@ -25,14 +27,14 @@ export class UserController {
 
   update = async (req, res) => {
     const { id } = req.params
-    if (!id) return { invalid_id: 'Valid id as UUUID is required' }
-    const result = this.userModel.update({ id, input: req.body })
+    const schemaResult = validatePartial(userSchema, req.body)
+    if (!schemaResult.success) return res.send(schemaResult.error)
+    const result = await this.userModel.update({ id, input: schemaResult.data })
     res.send((!result.success) ? { error: result.error } : { newUser: result.message })
   }
 
   delete = async (req, res) => {
     const { id } = req.params
-    if (!id) return { invalid_id: 'Valid id as UUUID is required' }
     const result = this.userModel.delete({ id })
     res.send((!result.success) ? { error: result.error } : { message: result.message })
   }

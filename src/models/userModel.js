@@ -22,16 +22,34 @@ export class UserModel {
   static async update ({ id, input }) {
     const list = []
     const values = []
-    for (const [key, value] of Object.entries(input)) {
-      list.push(`${key} = ?`)
-      values.push(value)
+    if (input.username) {
+      list.push('username = ?')
+      values.push(input.username)
     }
+    if (input.email) {
+      list.push('email = ?')
+      values.push(input.email)
+    }
+    if (input.password) {
+      list.push('password = ?')
+      const newPassword = await bcrypt.hash(input.password, SALT_ROUNDS)
+      values.push(newPassword)
+    }
+    if (input.name) {
+      list.push('name = ?')
+      values.push(input.name)
+    }
+    if (input.lastName) {
+      list.push('last_name = ?')
+      values.push(input.lastName)
+    }
+    if (list.length === 0) return { error: 'No data to update' }
     list.join(',')
     values.push(id)
     const query = `
     UPDATE users
     SET ${list}
-    WHERE id = UUID_TO_BIN(?)
+    WHERE user_id = UUID_TO_BIN(?)
     `
     try {
       const [result] = await db.execute(query, values)
@@ -75,7 +93,7 @@ export class UserModel {
     try {
       const [result] = await db.execute(`
         DELETE FROM users
-        WHERE id = UUID_TO_BIN(?)  
+        WHERE user_id = UUID_TO_BIN(?)  
         `
       , [id])
       return result.affectedRows > 0 ? { success: true, message: 'User has been deleted' } : { error: 'Can not delete user' }
