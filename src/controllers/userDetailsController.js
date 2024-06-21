@@ -1,5 +1,5 @@
-import { userDetailsSchema } from '../schemas/entities/userDetailsSchema.js'
-import { validatePartial } from '../schemas/schemaValidator.js'
+import { validatePartialUserDetails } from '../schemas/entities/userDetailsSchema.js'
+
 export class UserDetailsController {
   constructor ({ userDetailsModel }) {
     this.userDetailsModel = userDetailsModel
@@ -12,10 +12,10 @@ export class UserDetailsController {
   }
 
   updateByUserId = async (req, res) => {
-    const result = validatePartial(userDetailsSchema, req.body)
+    const result = validatePartialUserDetails(req.body)
     if (!result.success) return res.send(result.error)
-    const { userID, ...updatedData } = result.data
-    const updateResult = await this.userDetailsModel.getByUserId({ id: userID, input: updatedData })
+    const updateResult = await this.userDetailsModel.updateByUserId({ id: req.params.userId, input: result.data })
     if (!updateResult.success) res.send(updateResult.error)
+    res.send(updateResult.message)
   }
 }

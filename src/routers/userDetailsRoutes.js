@@ -6,5 +6,6 @@ export const createUserDetailsRoutes = ({ userDetailsModel }) => {
   const userDetailsRouter = Router({ mergeParams: true })
   const userDetailsController = new UserDetailsController({ userDetailsModel })
   userDetailsRouter.get('/', validateIdExist, userDetailsController.getByUserId)
+  userDetailsRouter.patch('/', validateIdExist, userDetailsController.updateByUserId)
   return userDetailsRouter
 }
