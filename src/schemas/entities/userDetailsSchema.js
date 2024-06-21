@@ -4,17 +4,12 @@ import countries from 'i18n-iso-countries'
 import { isPhoneNumber } from '../customValidations/phone.js'
 import { isAfter1924 } from '../customValidations/date.js'
 
-export const userDetailsSchema = z.object({
-  userId: z.string(ERRORS.REQUIRED('User ID')).uuid(ERRORS.INVALID('UUID')),
-
+const userDetailsSchema = z.object({
   country: z.string(ERRORS.REQUIRED('Country'))
-    .refine(countries, ERRORS.INVALID('Country')),
+    .refine(countries.isValid, ERRORS.INVALID('Country')),
 
   phoneNumber: z.string(ERRORS.REQUIRED('Phone number'))
-    .refine((number, context) => {
-      const country = context.parent.country
-      return isPhoneNumber(number, country)
-    }, ERRORS.INVALID('Phone number')),
+    .refine(number => number.trim().length > 0, ERRORS.INVALID('Phone number')),
 
   description: z.string(ERRORS.REQUIRED('Description'))
     .min(1, ERRORS.MIN('Description', 1))
@@ -23,6 +18,15 @@ export const userDetailsSchema = z.object({
   gender: z.boolean(ERRORS.REQUIRED('Gender')),
 
   birth: z.string(ERRORS.REQUIRED('Birth'))
-    .datetime()
+    .date()
     .refine(isAfter1924, ERRORS.AFTER_DATE('1924'))
 })
+
+export function validatePartialUserDetails (object) {
+  if (object.phoneNumber && !object.country) return { error: 'Country is required to add phone number' }
+  const result = userDetailsSchema.partial().safeParse(object)
+  if (!object.phoneNumber && !object.country) return result
+  if (!result.success) return result
+  if (!isPhoneNumber(object.phoneNumber, object.country)) return { succes: false, error: { errorInput: 'Invalid phone number for country sended' } }
+  return result
+}
