@@ -27,10 +27,10 @@ export class AuthController {
     const { password: _, ...publicUser } = result.data
     const token = jwt.sign(
       {
-        user_id: publicUser.user_id,
+        userId: publicUser.user_id,
         username: publicUser.username,
         name: publicUser.name,
-        last_name: publicUser.last_name
+        lastName: publicUser.last_name
       },
       JWT_KEY,
       {
