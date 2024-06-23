@@ -9,20 +9,20 @@ export class UserController {
   create = async (req, res) => {
     const id = randomUUID()
     const result = await this.userModel.create({ id, input: req })
-    res.send((!result.success) ? { error: result.error } : { user: result.message })
+    res.send((!result.success) ? result.error : result.data)
   }
 
   getById = async (req, res) => {
     const { id } = req.params
     const result = await this.userModel.getById({ id })
-    res.send((!result.success) ? { error: result.error } : { user: result.data })
+    res.send((!result.success) ? result.error : result.data)
   }
 
   getByQuery = async (req, res) => {
     const { name, lastname } = req.query
     if (!name && !lastname) return res.status(400).send({ error: 'Name or lastname are required at this endpoint' })
     const result = await this.userModel.getByQuery({ query: req.query })
-    res.send((!result.success) ? { error: result.error } : { user: result.data })
+    res.send((!result.success) ? result.error : result.data)
   }
 
   update = async (req, res) => {
@@ -30,13 +30,13 @@ export class UserController {
     const schemaResult = validatePartial(userSchema, req.body)
     if (!schemaResult.success) return res.send(schemaResult.error)
     const result = await this.userModel.update({ id, input: schemaResult.data })
-    res.send((!result.success) ? { error: result.error } : { newUser: result.message })
+    res.send((!result.success) ? result.error : result.data)
   }
 
   delete = async (req, res) => {
     const { id } = req.params
     const result = await this.userModel.delete({ id })
-    res.send((!result.success) ? { error: result.error } : { message: result.message })
+    res.send((!result.success) ? result.error : result.data)
   }
 
   getDataToLogin = async (input, key) => {
