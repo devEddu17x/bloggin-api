@@ -3,6 +3,7 @@ import { createAuthRoute } from './routers/authRoutes.js'
 import { createUserRouter } from './routers/userRoutes.js'
 import cookieParser from 'cookie-parser'
 import { createUserDetailsRoutes } from './routers/userDetailsRoutes.js'
+import { createPostRoutes } from './routers/postRoutes.js'
 
 export const createApp = ({ userModel, userDetailsModel, postModel, commentModel }) => {
   const app = express()
@@ -12,6 +13,7 @@ export const createApp = ({ userModel, userDetailsModel, postModel, commentModel
   app.use('/auth', createAuthRoute({ userModel }))
   app.use('/users/:userId/details', createUserDetailsRoutes({ userDetailsModel }))
   app.use('/users', createUserRouter({ userModel }))
+  app.use('/posts', createPostRoutes({ postModel }))
   const PORT = 3000
   app.listen(PORT, () => {
     console.log(`Server listening on port http://localhost:${PORT}`)
