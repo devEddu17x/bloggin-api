@@ -22,15 +22,16 @@ export class AuthController {
     const { input, password, key } = req.body
     const result = await this.userController.getDataToLogin(input, key)
     if (!result.succes) return res.send(result)
-    const valid = await bcrypt.compare(password, result.data.password)
+    console.log(result)
+    const valid = await bcrypt.compare(password, result.data.data.password)
     if (!valid) return res.send({ message: 'Invalid password' })
-    const { password: _, ...publicUser } = result.data
+    const { password: _, ...publicUser } = result.data.data
     const token = jwt.sign(
       {
-        userId: publicUser.user_id,
+        userId: publicUser.userId,
         username: publicUser.username,
         name: publicUser.name,
-        lastName: publicUser.last_name
+        lastName: publicUser.lastName
       },
       JWT_KEY,
       {
