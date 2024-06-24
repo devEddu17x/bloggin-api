@@ -8,9 +8,22 @@ export class PostModel {
         VALUES
         (UUID_TO_BIN(?), ?, ?, UUID_TO_BIN(?))
         `, [id, title, content, userId])
-      return { success: true, data: { message: 'Post has been created', postId: id } }
-    } catch {
-      return { error: 'Unexpected error ocurred' }
+      return {
+        success: true,
+        data: {
+          message: 'Post has been created',
+          post: {
+            postId: id
+          }
+        }
+      }
+    } catch (e) {
+      return {
+        error: {
+          message: 'Unexpected error ocurred',
+          url: '/posts/'
+        }
+      }
     }
   }
 
@@ -18,13 +31,16 @@ export class PostModel {
     const { title, content } = input
     const values = []
     const list = []
+    const newPost = {}
     if (title !== undefined) {
       list.push('title = ?')
       values.push(title)
+      newPost.title = title
     }
     if (content !== undefined) {
       list.push('content = ?')
       values.push(content)
+      newPost.content = content
     }
     if (list.length === 0) {
       return { error: 'No data to update' }
@@ -37,9 +53,28 @@ export class PostModel {
         SET ${list.join(',')}
         WHERE post_id = UUID_TO_BIN(?) AND user_id = UUID_TO_BIN(?)
         `, values)
-      return result.affectedRows > 0 ? { success: true, message: 'Post has been updated' } : { error: 'Post not updated' }
+      return result.affectedRows > 0
+        ? {
+            success: true,
+            data: {
+              message: 'Post updated',
+              postUpdated: newPost
+            }
+          }
+        : {
+            error: {
+              message: 'Post not updated',
+              try: 'Check sent id',
+              url: '/posts/'
+            }
+          }
     } catch (e) {
-      return { error: 'Unexpected error ocurred' }
+      return {
+        error: {
+          message: 'Unexpected error ocurred',
+          url: '/posts/'
+        }
+      }
     }
   }
 
@@ -49,9 +84,25 @@ export class PostModel {
         DELETE FROM posts
         WHERE post_id = UUID_TO_BIN(?) AND user_id = UUID_TO_BIN(?)
         `, [id, userId])
-      return result.affectedRows > 0 ? { success: true, message: 'Post has been deleted' } : { error: 'Post not deleted' }
+      return result.affectedRows > 0
+        ? {
+            success: true,
+            data: { message: 'Post has been deleted' }
+          }
+        : {
+            error: {
+              message: 'Can not delete post',
+              try: 'Check sent id',
+              path: '/posts/'
+            }
+          }
     } catch (e) {
-      return { error: 'Unexpected error ocurred' }
+      return {
+        error: {
+          message: 'Unexpected error ocurred',
+          url: '/posts/'
+        }
+      }
     }
   }
 }

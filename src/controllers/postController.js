@@ -14,7 +14,7 @@ export class PostController {
     if (!validationResult.success) return res.send(validationResult.error)
     const id = randomUUID()
     const result = await this.postModel.create({ id, input: validationResult.data })
-    res.send((!result.success) ? { error: result.error } : result.data)
+    res.send(result.success ? result.data : result.error)
   }
 
   update = async (req, res) => {
@@ -24,14 +24,13 @@ export class PostController {
     const validationResult = validatePartial(postSchema, { userId, ...req.body })
     if (!validationResult.success) return res.send(validationResult.error)
     const result = await this.postModel.update({ id, input: validationResult.data, userId })
-    res.send((!result.success) ? { error: result.error } : { message: result.message })
+    res.send(result.success ? result.data : result.error)
   }
 
   delete = async (req, res) => {
     const { id } = req.params
     const { userId } = jwt.decode(req.cookies.access_token)
     const result = await this.postModel.delete({ id, userId })
-    if (!result.success) return res.send({ error: result.error })
-    res.send({ message: result.message })
+    res.send(result.success ? result.data : result.error)
   }
 }
