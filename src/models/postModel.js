@@ -111,4 +111,34 @@ export class PostModel {
       }
     }
   }
+
+  static async getById ({ id }) {
+    try {
+      const [post] = await db.execute(`
+        SELECT title, content
+        FROM posts
+        WHERE post_id = UUID_TO_BIN(?)
+        `, [id])
+      return post.length > 0
+        ? {
+            success: true,
+            data: { post }
+          }
+        : {
+            error: {
+              message: 'Post not found',
+              try: 'Verify sent id',
+              url: '/posts/'
+            }
+          }
+    } catch (e) {
+      console.log(e)
+      return {
+        error: {
+          message: 'Unexpected error ocurred',
+          url: '/posts/'
+        }
+      }
+    }
+  }
 }

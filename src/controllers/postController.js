@@ -27,4 +27,10 @@ export class PostController {
     const result = await this.postModel.delete({ id, userId: req.data.userId })
     res.send(result.success ? result.data : result.error)
   }
+
+  getById = async (req, res) => {
+    const { id } = req.params
+    const result = await this.postModel.getById({ id })
+    res.send(result.success ? result.data : result.error)
+  }
 }
