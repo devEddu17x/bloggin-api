@@ -43,7 +43,13 @@ export class PostModel {
       newPost.content = content
     }
     if (list.length === 0) {
-      return { error: 'No data to update' }
+      return {
+        error: {
+          message: 'No data to update',
+          try: 'Check sent title and content',
+          url: '/posts/'
+        }
+      }
     }
     values.push(id)
     values.push(userId)

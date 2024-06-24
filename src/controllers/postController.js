@@ -1,5 +1,4 @@
 import { validate, validatePartial } from '../schemas/schemaValidator.js'
-import jwt from 'jsonwebtoken'
 import { postSchema } from '../schemas/entities/postSchema.js'
 import { randomUUID } from 'node:crypto'
 export class PostController {
@@ -8,9 +7,7 @@ export class PostController {
   }
 
   create = async (req, res) => {
-    const cookies = req.cookies
-    const { userId } = jwt.decode(cookies.access_token)
-    const validationResult = validate(postSchema, { userId, ...req.body })
+    const validationResult = validate(postSchema, { userId: req.data.userId, ...req.body })
     if (!validationResult.success) return res.send(validationResult.error)
     const id = randomUUID()
     const result = await this.postModel.create({ id, input: validationResult.data })
@@ -19,18 +16,15 @@ export class PostController {
 
   update = async (req, res) => {
     const { id } = req.params
-    const cookies = req.cookies
-    const { userId } = jwt.decode(cookies.access_token)
-    const validationResult = validatePartial(postSchema, { userId, ...req.body })
+    const validationResult = validatePartial(postSchema, { userId: req.data.userId, ...req.body })
     if (!validationResult.success) return res.send(validationResult.error)
-    const result = await this.postModel.update({ id, input: validationResult.data, userId })
+    const result = await this.postModel.update({ id, input: validationResult.data, userId: req.data.userId })
     res.send(result.success ? result.data : result.error)
   }
 
   delete = async (req, res) => {
     const { id } = req.params
-    const { userId } = jwt.decode(req.cookies.access_token)
-    const result = await this.postModel.delete({ id, userId })
+    const result = await this.postModel.delete({ id, userId: req.data.userId })
     res.send(result.success ? result.data : result.error)
   }
 }
