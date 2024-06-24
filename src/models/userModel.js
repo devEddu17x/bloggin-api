@@ -115,7 +115,7 @@ export class UserModel {
   static async getById ({ id }) {
     try {
       const [users] = await db.execute(`
-        SELECT username, email, name, last_name
+        SELECT username, email, name, last_name AS lastName
         FROM users
         WHERE user_id = UUID_TO_BIN(?)
         `, [id])
@@ -148,7 +148,7 @@ export class UserModel {
     if (query.lastname) values.push(query.lastname)
     try {
       const [users] = await db.execute(`
-        SELECT BIN_TO_UUID(user_id) user_id, username, name, last_name
+        SELECT BIN_TO_UUID(user_id) userId, username, name, last_name AS lastName
         FROM users
         WHERE ${toFind}
         `, values)
@@ -165,6 +165,7 @@ export class UserModel {
             }
           }
     } catch (e) {
+      console.log(e)
       return {
         error: {
           message: 'Unexpected error',
@@ -206,7 +207,7 @@ export class UserModel {
   static async getDataToLogin ({ input, key }) {
     try {
       const [rows] = await db.execute(`
-        SELECT BIN_TO_UUID(user_id) user_id, username, name, last_name, password 
+        SELECT BIN_TO_UUID(user_id) userId, username, name, last_name AS lastName, password 
         FROM users
         WHERE ${key} = ?
         `, [input])
