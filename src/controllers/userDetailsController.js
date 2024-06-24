@@ -15,7 +15,6 @@ export class UserDetailsController {
     const result = validatePartialUserDetails(req.body)
     if (!result.success) return res.send(result.error)
     const updateResult = await this.userDetailsModel.updateByUserId({ id: req.params.userId, input: result.data })
-    if (!updateResult.success) res.send(updateResult.error)
-    res.send(updateResult.message)
+    res.send(updateResult.success ? result.data : updateResult.error)
   }
 }

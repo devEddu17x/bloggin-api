@@ -3,25 +3,31 @@ export class UserDetailsModel {
   static async updateByUserId ({ id, input }) {
     const list = []
     const values = []
+    const newUserDetails = {}
     if (input.country) {
       list.push('country = ?')
       values.push(input.country)
+      newUserDetails.country = input.country
     }
     if (input.phoneNumber) {
       list.push('phone_number = ?')
       values.push(input.phoneNumber)
+      newUserDetails.phoneNumber = input.phoneNumber
     }
     if (input.description) {
       list.push('description = ?')
       values.push(input.description)
+      newUserDetails.description = input.description
     }
     if (input.gender !== undefined) {
       list.push('gender = ?')
       values.push(input.gender)
+      newUserDetails.gender = input.gender
     }
     if (input.birth) {
       list.push('birth = ?')
       values.push(input.birth)
+      newUserDetails.birth = input.birth
     }
     if (list.length === 0) return { error: { error: 'No data to update' } }
     list.join(',')
@@ -37,9 +43,28 @@ export class UserDetailsModel {
     console.log(query)
     try {
       const [result] = await db.execute(query, values)
-      return result.affectedRows > 0 ? { success: true, message: { updatedResult: 'User updated' } } : { error: { updatedResult: 'User not updated' } }
+      return result.affectedRows > 0
+        ? {
+            success: true,
+            data: {
+              message: 'User details updated',
+              userDetailsUpdaetd: newUserDetails
+            }
+          }
+        : {
+            error: {
+              message: 'User details not updated',
+              try: 'Check sent id',
+              url: '/users/userDetails/'
+            }
+          }
     } catch (e) {
-      return ({ error: 'Error updating user' })
+      return {
+        error: {
+          message: 'Unexpected error ocurred',
+          url: '/users/userDetails/'
+        }
+      }
     }
   }
 
@@ -50,10 +75,26 @@ export class UserDetailsModel {
         FROM user_details
         WHERE user_id = UUID_TO_BIN(?)
         `, [id])
-      return users.length > 0 ? { success: true, data: users[0] } : { error: { searchingError: 'User not found' } }
+      return users.length > 0
+        ? {
+            success: true,
+            data: { user: users[0] }
+          }
+        : {
+            error: {
+              message: 'User not found',
+              try: 'Check sent id',
+              url: 'users/userDetails'
+            }
+          }
     } catch (e) {
       console.log(e)
-      return { error: 'Can not find user' }
+      return {
+        error: {
+          message: 'Unexpected error ocurred',
+          url: '/users/'
+        }
+      }
     }
   }
 }
