@@ -22,7 +22,6 @@ export class AuthController {
     const { input, password, key } = req.body
     const result = await this.userController.getDataToLogin(input, key)
     if (!result.succes) return res.send(result)
-    console.log(result)
     const valid = await bcrypt.compare(password, result.data.data.password)
     if (!valid) return res.send({ message: 'Invalid password' })
     const { password: _, ...publicUser } = result.data.data
