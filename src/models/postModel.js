@@ -1,4 +1,5 @@
 import { db } from '../config/db/mysql.js'
+import { format } from 'date-fns'
 export class PostModel {
   static async create ({ id, input }) {
     const { title, content, userId } = input
@@ -128,6 +129,41 @@ export class PostModel {
             error: {
               message: 'Post not found',
               try: 'Verify sent id',
+              url: '/posts/'
+            }
+          }
+    } catch (e) {
+      return {
+        error: {
+          message: 'Unexpected error ocurred',
+          url: '/posts/'
+        }
+      }
+    }
+  }
+
+  static async get ({ after }) {
+    try {
+      const [posts] = await db.execute(`
+        SELECT BIN_TO_UUID(post_id) postId, title, content, created_at AS createdAt
+        FROM posts
+        WHERE created_at <= ?
+        ORDER BY created_at DESC
+        LIMIT 10
+        `, [after])
+      const nextAfter = posts.length > 0 ? format(posts[posts.length - 1].createdAt, 'yyyy-MM-dd HH:mm:ss') : null
+      return posts.length > 0
+        ? {
+            success: true,
+            data: {
+              posts,
+              after: nextAfter
+            }
+          }
+        : {
+            error: {
+              message: 'Posts not found',
+              try: 'Verify after param',
               url: '/posts/'
             }
           }

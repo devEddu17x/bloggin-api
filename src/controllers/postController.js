@@ -1,6 +1,8 @@
 import { validate, validatePartial } from '../schemas/schemaValidator.js'
 import { postSchema } from '../schemas/entities/postSchema.js'
 import { randomUUID } from 'node:crypto'
+import { format } from 'date-fns'
+
 export class PostController {
   constructor ({ postModel }) {
     this.postModel = postModel
@@ -31,6 +33,12 @@ export class PostController {
   getById = async (req, res) => {
     const { id } = req.params
     const result = await this.postModel.getById({ id })
+    res.send(result.success ? result.data : result.error)
+  }
+
+  get = async (req, res) => {
+    const after = req.query.after || format(new Date(), 'yyyy-MM-dd HH:mm:ss')
+    const result = await this.postModel.get({ after })
     res.send(result.success ? result.data : result.error)
   }
 }
