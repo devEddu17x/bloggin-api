@@ -32,15 +32,11 @@ export class UserDetailsModel {
     if (list.length === 0) return { error: { error: 'No data to update' } }
     list.join(',')
     values.push(id)
-    console.log(input.gender)
-    console.log(list)
-    console.log(values)
     const query = `
     UPDATE user_details
     SET ${list}
     WHERE user_id = UUID_TO_BIN(?)
     `
-    console.log(query)
     try {
       const [result] = await db.execute(query, values)
       return result.affectedRows > 0
@@ -88,7 +84,6 @@ export class UserDetailsModel {
             }
           }
     } catch (e) {
-      console.log(e)
       return {
         error: {
           message: 'Unexpected error ocurred',

@@ -132,7 +132,6 @@ export class PostModel {
             }
           }
     } catch (e) {
-      console.log(e)
       return {
         error: {
           message: 'Unexpected error ocurred',

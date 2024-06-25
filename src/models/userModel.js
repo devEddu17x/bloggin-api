@@ -165,7 +165,6 @@ export class UserModel {
             }
           }
     } catch (e) {
-      console.log(e)
       return {
         error: {
           message: 'Unexpected error',
