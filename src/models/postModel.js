@@ -49,7 +49,8 @@ export class PostModel {
           message: 'No data to update',
           try: 'Check sent title and content',
           url: '/posts/'
-        }
+        },
+        invalidData: true
       }
     }
     values.push(id)
@@ -71,7 +72,7 @@ export class PostModel {
         : {
             error: {
               message: 'Post not updated',
-              try: 'Check sent id',
+              try: 'Check sent id or post owner',
               url: '/posts/'
             }
           }
