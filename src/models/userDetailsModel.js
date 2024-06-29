@@ -29,7 +29,7 @@ export class UserDetailsModel {
       values.push(input.birth)
       newUserDetails.birth = input.birth
     }
-    if (list.length === 0) return { error: { error: 'No data to update' } }
+    if (list.length === 0) return { error: { error: 'No valid data to update' }, validData: false }
     list.join(',')
     values.push(id)
     const query = `
