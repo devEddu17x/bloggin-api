@@ -14,16 +14,16 @@ export class AuthController {
   register = async (req, res) => {
     const essentialData = validate(userSchema, req.body)
     if (!essentialData.success) return res.send(essentialData.error)
-    res.send(await this.userController.create(essentialData.data, res))
+    await this.userController.create(essentialData.data, res)
   }
 
   // login in building
   login = async (req, res) => {
     const { input, password, key } = req.body
     const result = await this.userController.getDataToLogin(input, key)
-    if (!result.succes) return res.send(result)
+    if (!result.succes) return res.status(404).send(result)
     const valid = await bcrypt.compare(password, result.data.data.password)
-    if (!valid) return res.send({ message: 'Invalid password' })
+    if (!valid) return res.status(401).send({ message: 'Invalid password' })
     const { password: _, ...publicUser } = result.data.data
     const token = jwt.sign(
       {
