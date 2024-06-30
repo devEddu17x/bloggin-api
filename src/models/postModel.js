@@ -148,7 +148,7 @@ export class PostModel {
       const [posts] = await db.execute(`
         SELECT BIN_TO_UUID(post_id) postId, title, content, created_at AS createdAt
         FROM posts
-        WHERE created_at <= ?
+        WHERE created_at < ?
         ORDER BY created_at DESC
         LIMIT 10
         `, [after])
