@@ -10,14 +10,12 @@ export class AuthController {
     this.userController = new UserController({ userModel })
   }
 
-  // data base has a trigger that create by itself userDetails record, so i just need to create an user
   register = async (req, res) => {
     const essentialData = validate(userSchema, req.body)
     if (!essentialData.success) return res.send(essentialData.error)
     await this.userController.create(essentialData.data, res)
   }
 
-  // login in building
   login = async (req, res) => {
     const { input, password, key } = req.body
     const result = await this.userController.getDataToLogin(input, key)
