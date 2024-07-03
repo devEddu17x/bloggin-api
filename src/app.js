@@ -5,8 +5,9 @@ import cookieParser from 'cookie-parser'
 import { createUserDetailsRoutes } from './routers/userDetailsRoutes.js'
 import { createPostRoutes } from './routers/postRoutes.js'
 import { createCommentRoutes } from './routers/commentRoutes.js'
+import { createFollowRouters } from './routers/followRoutes.js'
 
-export const createApp = ({ userModel, userDetailsModel, postModel, commentModel }) => {
+export const createApp = ({ userModel, userDetailsModel, postModel, commentModel, followModel }) => {
   const app = express()
   app.use(json())
   app.use(cookieParser())
@@ -16,6 +17,7 @@ export const createApp = ({ userModel, userDetailsModel, postModel, commentModel
   app.use('/users', createUserRouter({ userModel }))
   app.use('/posts/:postId/comments', createCommentRoutes({ commentModel }))
   app.use('/posts', createPostRoutes({ postModel }))
+  app.use('/follow', createFollowRouters({ followModel }))
   const PORT = process.env.PORT || 3000
   app.listen(PORT, () => {
     console.log(`Server listening on port http://localhost:${PORT}`)
